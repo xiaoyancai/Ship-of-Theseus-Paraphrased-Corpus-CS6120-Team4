@@ -25,6 +25,19 @@ Ship of Theseus Paraphrased Corpus:
 
 ## Repository Structure
 
+```
+.
+├── data/            # Ship of Theseus Paraphrased Corpus (T0–T3, 4 paraphrasers)
+├── docs/            # Project documentation and notes
+├── experiments/     # Experiment configs, logs, and results
+├── figures/         # Plots and visualizations for analysis/paper
+├── notebooks/       # Jupyter notebooks for exploration and analysis
+├── paper/           # Manuscript and related writing
+├── src/             # Source code (preprocessing, paraphrasing, analysis)
+├── requirements.txt # Python dependencies
+└── README.md
+```
+
 
 
 ## Team Members
