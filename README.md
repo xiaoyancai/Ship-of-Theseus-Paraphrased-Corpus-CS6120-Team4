@@ -3,6 +3,13 @@
 This repository investigates linguistic decay and authorial identity loss
 under iterative paraphrasing by large language models.
 
+## Team Members
+
+- Chuwei Cai
+- Xiaoyan Cai
+- Chuwei Du
+- Lexin Yi
+
 ## Research Questions
 
 ### RQ1 — Style vs. Content Decay
@@ -38,11 +45,53 @@ Ship of Theseus Paraphrased Corpus:
 └── README.md
 ```
 
+# Project Update 1
 
+## Data
+We use:
+- Yelp
+- XSum
+- `source == "Human"`
 
-## Team Members
+Paraphrasers:
+- ChatGPT
+- PaLM
+- Pegasus(full)
+- Dipper
 
-- Chuwei Cai
-- Xiaoyan Cai
-- Chuwei Du
-- Lexin Yi
+Only complete **T0 → T3** chains are retained.
+
+## Processed Data
+
+Main file:
+
+```text
+data/processed/update1_processed.csv
+```
+
+Columns:
+
+```text
+dataset, key, source, paraphraser, t0, t1, t2, t3
+```
+
+## Complete Chains
+
+| Dataset | ChatGPT | PaLM | Pegasus | Dipper |
+|---|---:|---:|---:|---:|
+| Yelp | 488 | 486 | 491 | 491 |
+| XSum | 471 | 340 | 475 | 476 |
+
+## Code
+
+```text
+src/preprocessing.py
+notebooks/01_data_exploration.ipynb
+```
+
+## Next Steps
+
+- BLEU / ROUGE
+- BERTScore
+- Stylometric analysis
+- Linguistic Delta

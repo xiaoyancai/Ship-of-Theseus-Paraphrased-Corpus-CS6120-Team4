@@ -1,0 +1,9 @@
+dataset,paraphraser,complete_chains
+xsum,ChatGPT,471
+xsum,Dipper,476
+xsum,PaLM,340
+xsum,Pegasus,475
+yelp,ChatGPT,488
+yelp,Dipper,491
+yelp,PaLM,486
+yelp,Pegasus,491
