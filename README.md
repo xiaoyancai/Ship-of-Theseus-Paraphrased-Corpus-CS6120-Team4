@@ -95,3 +95,37 @@ notebooks/01_data_exploration.ipynb
 - BERTScore
 - Stylometric analysis
 - Linguistic Delta
+
+## Similarity Baseline (Member B)
+
+The reproducible baseline compares each paraphrased generation with its original
+`t0` text. It reports sentence-level BLEU, ROUGE-1/2/L F1, and BERTScore
+precision/recall/F1 for `t1`, `t2`, and `t3`.
+
+Install the dependencies and run:
+
+```bash
+python -m pip install -r requirements.txt
+python src/similarity_baseline.py
+```
+
+For a faster first pass, run lexical metrics independently:
+
+```bash
+python src/similarity_baseline.py --metrics lexical \
+  --details-output data/results/update1_lexical_scores.csv \
+  --summary-output data/results/update1_lexical_summary.csv
+```
+
+Use `--limit 100` for a pilot run before processing the full dataset.
+
+The default command reads `data/processed/update1_processed.csv` and writes:
+
+- `data/results/update1_similarity_scores.csv`: one row per document, paraphraser, and generation.
+- `data/results/update1_similarity_summary.csv`: mean, sample standard deviation, and count grouped by dataset, paraphraser, and generation.
+
+The default BERTScore model is `distilbert-base-uncased` with `lang=en` and
+CPU execution. On a CUDA-enabled machine, use `--device cuda` and increase
+`--batch-size` as memory allows.
+Scores are measured against `t0`, so higher values indicate greater lexical or
+semantic retention relative to the human source.

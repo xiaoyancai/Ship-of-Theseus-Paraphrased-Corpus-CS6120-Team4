@@ -1,0 +1,7 @@
+sacrebleu>=2.4,<3
+rouge-score>=0.1,<1
+bert-score>=0.3.13,<1
+transformers>=4.45,<5
+huggingface-hub>=0.25,<1
+tokenizers>=0.22,<0.24
+pytest>=7,<8
