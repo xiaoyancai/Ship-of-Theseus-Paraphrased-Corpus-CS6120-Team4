@@ -129,3 +129,41 @@ CPU execution. On a CUDA-enabled machine, use `--device cuda` and increase
 `--batch-size` as memory allows.
 Scores are measured against `t0`, so higher values indicate greater lexical or
 semantic retention relative to the human source.
+
+## Style vs. Content Decay
+
+The initial analysis extends the similarity baseline with Type–Token Ratio,
+mean sentence length, sentence length variance, and punctuation frequency.
+It reports T0-relative retention and signed feature changes for T0–T3.
+
+Run from the repository root after the lexical and BERTScore files are available:
+
+```bash
+python src/style_decay.py
+```
+
+The supplied `update1_lexical_scores.csv` and `update1_bertscore_scores.csv`
+are reused with exact document/generation alignment checks. To regenerate these
+inputs, use the existing baseline with `--metrics lexical` or `--metrics bertscore`
+and set the corresponding `--details-output` and `--summary-output` paths.
+
+Outputs:
+
+- `data/results/update1_style_decay_scores.csv`: raw features, relative changes, and retention for each chain and generation.
+- `data/results/update1_style_decay_summary.csv`: per-metric mean, sample standard deviation, and nonmissing count.
+- `data/results/update1_style_decay_matched_summary.csv`: the same summaries on sources shared by all four paraphrasers.
+- `data/results/update1_style_decay_metadata.json`: analysis counts and score-provenance limitations.
+- `figures/update1_*decay.png` and `figures/update1_*comparison.png`: T0–T3 curves by dataset and paraphraser.
+- [Analysis and figure interpretation](docs/update1_style_decay.md).
+- `notebooks/02_style_content_decay.ipynb`: reproducible analysis and output inspection.
+
+The stylistic features remain an initial descriptive analysis. T0 normalization
+provides a shared anchor, but it does not calibrate lexical, semantic, and stylistic
+metrics onto equivalent scales. See the report for zero-baseline handling and the
+limits of the claim that semantics is retained longer than style.
+
+Run the added feature/alignment checks with:
+
+```bash
+python -m unittest discover -s tests -p 'test_style_decay.py'
+```
