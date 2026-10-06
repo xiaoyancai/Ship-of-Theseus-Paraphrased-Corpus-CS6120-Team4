@@ -1,0 +1,16 @@
+{
+  "chains": 3718,
+  "generation_rows": 14872,
+  "matched_chains": 3276,
+  "similarity_provenance": "Supplied score CSVs; original runtime/model configuration not recorded.",
+  "t0_similarity": "Theoretical self-similarity anchor 1; not recomputed.",
+  "feature_variance_ddof": 0,
+  "summary_std_ddof": 1,
+  "undefined_relative_changes": {
+    "type_token_ratio": 0,
+    "sentence_length_mean": 0,
+    "sentence_length_variance": 75,
+    "punctuation_frequency": 24,
+    "average_word_length": 0
+  }
+}

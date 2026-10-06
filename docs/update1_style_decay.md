@@ -23,6 +23,7 @@ All complete chains are retained in the main outputs. Because chain availability
 - Mean sentence length: mean word-token count across nonempty sentences.
 - Sentence length variance: population variance of sentence word-token counts (ddof = 0); a single sentence has variance 0.
 - Punctuation frequency: Unicode punctuation characters per 100 word tokens.
+- Average word length: mean number of Unicode letters per word token.
 
 Sentence boundaries use a lightweight rule based on sentence-final punctuation followed by whitespace, or line breaks. Abbreviations and irregular punctuation can affect segmentation. TTR is sensitive to text length. These features provide initial descriptive evidence, not a validated measure of authorial identity.
 
@@ -34,7 +35,7 @@ For similarity metrics, T0 self-similarity is set to its theoretical value of 1.
 
 For each stylistic feature f, signed relative change is (f(Tg) − f(T0)) / f(T0). If both values are zero, change is 0; if only T0 is zero, the ratio is undefined and saved as a missing value. Per-metric counts in the summary expose these exclusions.
 
-To include zero-baseline features in a bounded descriptive curve, feature retention is 1 − |f(Tg) − f(T0)| / (|f(Tg)| + |f(T0)|), with retention 1 when both are zero. Style retention is the unweighted mean of the four feature retentions for each chain and generation. This is an exploratory feature-preservation index. Normalization gives a common T0 anchor, but does not make BLEU, BERTScore, and style retention empirically calibrated or directly equivalent.
+To include zero-baseline features in a bounded descriptive curve, feature retention is 1 − |f(Tg) − f(T0)| / (|f(Tg)| + |f(T0)|), with retention 1 when both are zero. Style retention is the unweighted mean of the five feature retentions for each chain and generation. This is an exploratory feature-preservation index. Normalization gives a common T0 anchor, but does not make BLEU, BERTScore, and style retention empirically calibrated or directly equivalent.
 
 ## 4. Decay Curves
 
@@ -60,46 +61,57 @@ T3 means on the matched cohort:
 
 | dataset | paraphraser | bleu | rougeL_f1 | bertscore_f1 | style_retention |
 | --- | --- | --- | --- | --- | --- |
-| xsum | ChatGPT | 0.201 | 0.447 | 0.874 | 0.864 |
-| xsum | Dipper | 0.084 | 0.245 | 0.823 | 0.859 |
-| xsum | PaLM | 0.435 | 0.652 | 0.919 | 0.889 |
-| xsum | Pegasus | 0.248 | 0.516 | 0.852 | 0.825 |
-| yelp | ChatGPT | 0.127 | 0.390 | 0.845 | 0.831 |
-| yelp | Dipper | 0.073 | 0.250 | 0.814 | 0.828 |
-| yelp | PaLM | 0.203 | 0.480 | 0.864 | 0.830 |
-| yelp | Pegasus | 0.221 | 0.505 | 0.865 | 0.801 |
+| xsum | ChatGPT | 0.201 | 0.447 | 0.874 | 0.882 |
+| xsum | Dipper | 0.084 | 0.245 | 0.823 | 0.882 |
+| xsum | PaLM | 0.435 | 0.652 | 0.919 | 0.908 |
+| xsum | Pegasus | 0.248 | 0.516 | 0.852 | 0.855 |
+| yelp | ChatGPT | 0.127 | 0.390 | 0.845 | 0.850 |
+| yelp | Dipper | 0.073 | 0.250 | 0.814 | 0.856 |
+| yelp | PaLM | 0.203 | 0.480 | 0.864 | 0.856 |
+| yelp | Pegasus | 0.221 | 0.505 | 0.865 | 0.834 |
 
 ### XSUM
 
-ChatGPT: from T1 to T3, BLEU changes from 0.262 to 0.201, ROUGE-L F1 from 0.523 to 0.447, BERTScore F1 from 0.892 to 0.874, and exploratory style retention from 0.875 to 0.864.
+ChatGPT: from T1 to T3, BLEU changes from 0.262 to 0.201, ROUGE-L F1 from 0.523 to 0.447, BERTScore F1 from 0.892 to 0.874, and exploratory style retention from 0.892 to 0.882.
 
-PaLM: from T1 to T3, BLEU changes from 0.545 to 0.435, ROUGE-L F1 from 0.738 to 0.652, BERTScore F1 from 0.937 to 0.919, and exploratory style retention from 0.911 to 0.889.
+PaLM: from T1 to T3, BLEU changes from 0.545 to 0.435, ROUGE-L F1 from 0.738 to 0.652, BERTScore F1 from 0.937 to 0.919, and exploratory style retention from 0.926 to 0.908.
 
-Dipper: from T1 to T3, BLEU changes from 0.208 to 0.084, ROUGE-L F1 from 0.357 to 0.245, BERTScore F1 from 0.866 to 0.823, and exploratory style retention from 0.879 to 0.859.
+Dipper: from T1 to T3, BLEU changes from 0.208 to 0.084, ROUGE-L F1 from 0.357 to 0.245, BERTScore F1 from 0.866 to 0.823, and exploratory style retention from 0.899 to 0.882.
 
-Pegasus: from T1 to T3, BLEU changes from 0.410 to 0.248, ROUGE-L F1 from 0.653 to 0.516, BERTScore F1 from 0.897 to 0.852, and exploratory style retention from 0.867 to 0.825.
+Pegasus: from T1 to T3, BLEU changes from 0.410 to 0.248, ROUGE-L F1 from 0.653 to 0.516, BERTScore F1 from 0.897 to 0.852, and exploratory style retention from 0.889 to 0.855.
 
 At T3, BERTScore F1 ranks PaLM > ChatGPT > Pegasus > Dipper on the matched sources. This describes this metric and sample, rather than overall paraphraser quality.
 
 ### YELP
 
-ChatGPT: from T1 to T3, BLEU changes from 0.179 to 0.127, ROUGE-L F1 from 0.475 to 0.390, BERTScore F1 from 0.869 to 0.845, and exploratory style retention from 0.850 to 0.831.
+ChatGPT: from T1 to T3, BLEU changes from 0.179 to 0.127, ROUGE-L F1 from 0.475 to 0.390, BERTScore F1 from 0.869 to 0.845, and exploratory style retention from 0.868 to 0.850.
 
-PaLM: from T1 to T3, BLEU changes from 0.293 to 0.203, ROUGE-L F1 from 0.595 to 0.480, BERTScore F1 from 0.890 to 0.864, and exploratory style retention from 0.847 to 0.830.
+PaLM: from T1 to T3, BLEU changes from 0.293 to 0.203, ROUGE-L F1 from 0.595 to 0.480, BERTScore F1 from 0.890 to 0.864, and exploratory style retention from 0.872 to 0.856.
 
-Dipper: from T1 to T3, BLEU changes from 0.172 to 0.073, ROUGE-L F1 from 0.365 to 0.250, BERTScore F1 from 0.857 to 0.814, and exploratory style retention from 0.863 to 0.828.
+Dipper: from T1 to T3, BLEU changes from 0.172 to 0.073, ROUGE-L F1 from 0.365 to 0.250, BERTScore F1 from 0.857 to 0.814, and exploratory style retention from 0.885 to 0.856.
 
-Pegasus: from T1 to T3, BLEU changes from 0.370 to 0.221, ROUGE-L F1 from 0.647 to 0.505, BERTScore F1 from 0.905 to 0.865, and exploratory style retention from 0.862 to 0.801.
+Pegasus: from T1 to T3, BLEU changes from 0.370 to 0.221, ROUGE-L F1 from 0.647 to 0.505, BERTScore F1 from 0.905 to 0.865, and exploratory style retention from 0.885 to 0.834.
 
 At T3, BERTScore F1 ranks Pegasus > PaLM > ChatGPT > Dipper on the matched sources. This describes this metric and sample, rather than overall paraphraser quality.
 
 ### Initial Stylistic Patterns
 
-XSUM: across the four paraphrasers at T3, TTR retention ranges from 0.941 to 0.970, mean sentence length retention from 0.782 to 0.929, sentence length variance retention from 0.681 to 0.756, and punctuation retention from 0.833 to 0.924. These values use all complete chains, as in Figure 2.
+XSUM: across the four paraphrasers at T3, TTR retention ranges from 0.941 to 0.970, mean sentence length retention from 0.782 to 0.929, sentence length variance retention from 0.681 to 0.756, punctuation retention from 0.833 to 0.924, and average word-length retention from 0.952 to 0.985. These values use all complete chains, as in Figure 2.
 
-YELP: across the four paraphrasers at T3, TTR retention ranges from 0.960 to 0.966, mean sentence length retention from 0.814 to 0.877, sentence length variance retention from 0.601 to 0.663, and punctuation retention from 0.816 to 0.844. These values use all complete chains, as in Figure 2.
+YELP: across the four paraphrasers at T3, TTR retention ranges from 0.960 to 0.966, mean sentence length retention from 0.814 to 0.877, sentence length variance retention from 0.601 to 0.663, punctuation retention from 0.816 to 0.844, and average word-length retention from 0.929 to 0.969. These values use all complete chains, as in Figure 2.
 
 Sentence length variance shows the largest departure under this feature-distance definition, while TTR stays closest to its source value. Variance is sensitive to sentence segmentation and zero baselines, so this difference requires follow-up before being interpreted as a robust stylistic effect.
 
+## 6. Initial Interpretation
 
+At T3, BERTScore F1 is numerically higher than ROUGE-L F1 in 8 of 8 matched dataset/paraphraser groups and higher than the exploratory style index in 3 of 8 groups. The curves are consistent with substantial surface rewriting while semantic similarity remains comparatively high. This supports a preliminary hypothesis that semantic content may be more stable than lexical form under these metrics.
 
+The stronger claim that semantics lasts longer than style is not established. Raw BERTScore has a different score distribution from lexical overlap, and the style index depends on a chosen distance formula and five equally weighted features. T0 normalization alone cannot resolve these differences. A high style index can also conceal substantial changes in features not measured here. Decline relative to T0 is evidence of change, not proof of a loss of authorial identity.
+
+## 7. Limitations and Next Steps
+
+- Treat the stylistic features as an initial analysis. Add length-controlled lexical diversity, richer syntactic features, and authorship attribution before making claims about identity loss.
+- Validate semantic retention using human judgments or controlled meaning-change examples, and record the BERTScore model and configuration when regenerating scores.
+- Use source-level paired bootstrap intervals for model comparisons; the present means and standard deviations do not establish statistical significance.
+- Inspect signed feature changes alongside bounded retention. An increase in sentence length or TTR is still a departure from T0, and zero baselines require explicit handling.
+- Retain the matched-source sensitivity analysis because complete-chain counts differ across models, especially for XSum PaLM.
