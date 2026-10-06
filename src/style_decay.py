@@ -16,11 +16,13 @@ import matplotlib.pyplot as plt
 IDS = ['dataset', 'key', 'source', 'paraphraser']
 KEYS = IDS + ['generation']
 MODELS = ['ChatGPT', 'PaLM', 'Dipper', 'Pegasus']
-FEATURES = ['type_token_ratio', 'sentence_length_mean', 'sentence_length_variance', 'punctuation_frequency']
+FEATURES = ['type_token_ratio', 'sentence_length_mean', 'sentence_length_variance',
+            'punctuation_frequency', 'average_word_length']
 LEXICAL = ['bleu', 'rouge1_f1', 'rouge2_f1', 'rougeL_f1']
 SEMANTIC = ['bertscore_precision', 'bertscore_recall', 'bertscore_f1']
 LABELS = {'type_token_ratio': 'Type–Token Ratio', 'sentence_length_mean': 'Mean sentence length',
           'sentence_length_variance': 'Sentence length variance', 'punctuation_frequency': 'Punctuation frequency',
+          'average_word_length': 'Average word length',
           'bleu': 'BLEU', 'rouge1_f1': 'ROUGE-1 F1', 'rouge2_f1': 'ROUGE-2 F1',
           'rougeL_f1': 'ROUGE-L F1', 'bertscore_f1': 'BERTScore F1'}
 
@@ -38,7 +40,8 @@ def stylistic_features(text):
     lengths = [len(words(sentence)) for sentence in sentences if words(sentence)]
     return dict(zip(FEATURES, [len(set(tokens)) / len(tokens), float(np.mean(lengths)),
                               float(np.var(lengths, ddof=0)),
-                              100 * sum(unicodedata.category(c).startswith('P') for c in text) / len(tokens)]))
+                              100 * sum(unicodedata.category(c).startswith('P') for c in text) / len(tokens),
+                              float(np.mean([len(token) for token in tokens]))]))
 
 
 def relative_values(original, value):
@@ -160,13 +163,14 @@ def write_report(details, path):
     '- Type–Token Ratio: unique lowercase word tokens divided by all word tokens. Apostrophes within words are retained; numbers are excluded.',
     '- Mean sentence length: mean word-token count across nonempty sentences.',
     '- Sentence length variance: population variance of sentence word-token counts (ddof = 0); a single sentence has variance 0.',
-    '- Punctuation frequency: Unicode punctuation characters per 100 word tokens.', '',
+    '- Punctuation frequency: Unicode punctuation characters per 100 word tokens.',
+    '- Average word length: mean number of Unicode letters per word token.', '',
     'Sentence boundaries use a lightweight rule based on sentence-final punctuation followed by whitespace, or line breaks. Abbreviations and irregular punctuation can affect segmentation. TTR is sensitive to text length. These features provide initial descriptive evidence, not a validated measure of authorial identity.', '',
     '## 3. T0-relative Metrics', '',
     'BLEU and ROUGE-1/2/L F1 represent lexical retention. BERTScore precision/recall/F1 represent semantic similarity, with F1 used in the main figures. The supplied document-level score files are reused after exact key and coverage validation. The existing baseline defaults to distilbert-base-uncased without baseline rescaling; the supplied CSV files do not record the actual model, configuration, or package versions used, so their generation settings cannot be independently confirmed.', '',
     'For similarity metrics, T0 self-similarity is set to its theoretical value of 1. Retention is S(Tg,T0) / S(T0,T0), which equals the stored score; relative change is retention − 1. T0 anchors are not newly computed BERTScore observations.', '',
     'For each stylistic feature f, signed relative change is (f(Tg) − f(T0)) / f(T0). If both values are zero, change is 0; if only T0 is zero, the ratio is undefined and saved as a missing value. Per-metric counts in the summary expose these exclusions.', '',
-    'To include zero-baseline features in a bounded descriptive curve, feature retention is 1 − |f(Tg) − f(T0)| / (|f(Tg)| + |f(T0)|), with retention 1 when both are zero. Style retention is the unweighted mean of the four feature retentions for each chain and generation. This is an exploratory feature-preservation index. Normalization gives a common T0 anchor, but does not make BLEU, BERTScore, and style retention empirically calibrated or directly equivalent.', '',
+    'To include zero-baseline features in a bounded descriptive curve, feature retention is 1 − |f(Tg) − f(T0)| / (|f(Tg)| + |f(T0)|), with retention 1 when both are zero. Style retention is the unweighted mean of the five feature retentions for each chain and generation. This is an exploratory feature-preservation index. Normalization gives a common T0 anchor, but does not make BLEU, BERTScore, and style retention empirically calibrated or directly equivalent.', '',
     '## 4. Decay Curves', '',
     '![Lexical retention](../figures/update1_lexical_decay.png)', '',
     '**Figure 1.** Mean BLEU and ROUGE-1/2/L F1 relative to the original T0 text. Each row is a dataset and each line is a paraphraser. Lower values indicate less surface overlap; the same complete chains contribute at every generation within each line.', '',
@@ -190,13 +194,13 @@ def write_report(details, path):
     for dataset in sorted(details.dataset.unique()):
         final = details[(details.dataset == dataset) & (details.generation == 't3')]
         means = final.groupby('paraphraser')[[f + '_retention' for f in FEATURES]].mean()
-        lines += [f'{dataset.upper()}: across the four paraphrasers at T3, TTR retention ranges from {means.type_token_ratio_retention.min():.3f} to {means.type_token_ratio_retention.max():.3f}, mean sentence length retention from {means.sentence_length_mean_retention.min():.3f} to {means.sentence_length_mean_retention.max():.3f}, sentence length variance retention from {means.sentence_length_variance_retention.min():.3f} to {means.sentence_length_variance_retention.max():.3f}, and punctuation retention from {means.punctuation_frequency_retention.min():.3f} to {means.punctuation_frequency_retention.max():.3f}. These values use all complete chains, as in Figure 2.', '']
+        lines += [f'{dataset.upper()}: across the four paraphrasers at T3, TTR retention ranges from {means.type_token_ratio_retention.min():.3f} to {means.type_token_ratio_retention.max():.3f}, mean sentence length retention from {means.sentence_length_mean_retention.min():.3f} to {means.sentence_length_mean_retention.max():.3f}, sentence length variance retention from {means.sentence_length_variance_retention.min():.3f} to {means.sentence_length_variance_retention.max():.3f}, punctuation retention from {means.punctuation_frequency_retention.min():.3f} to {means.punctuation_frequency_retention.max():.3f}, and average word-length retention from {means.average_word_length_retention.min():.3f} to {means.average_word_length_retention.max():.3f}. These values use all complete chains, as in Figure 2.', '']
     lines += ['Sentence length variance shows the largest departure under this feature-distance definition, while TTR stays closest to its source value. Variance is sensitive to sentence segmentation and zero baselines, so this difference requires follow-up before being interpreted as a robust stylistic effect.', '']
     semantic_above = (table.bertscore_f1 > table.rougeL_f1).sum()
     style_above = (table.bertscore_f1 > table.style_retention).sum()
     lines += ['## 6. Initial Interpretation', '',
     f'At T3, BERTScore F1 is numerically higher than ROUGE-L F1 in {semantic_above} of {len(table)} matched dataset/paraphraser groups and higher than the exploratory style index in {style_above} of {len(table)} groups. The curves are consistent with substantial surface rewriting while semantic similarity remains comparatively high. This supports a preliminary hypothesis that semantic content may be more stable than lexical form under these metrics.', '',
-    'The stronger claim that semantics lasts longer than style is not established. Raw BERTScore has a different score distribution from lexical overlap, and the style index depends on a chosen distance formula and four equally weighted features. T0 normalization alone cannot resolve these differences. A high style index can also conceal substantial changes in features not measured here. Decline relative to T0 is evidence of change, not proof of a loss of authorial identity.', '',
+    'The stronger claim that semantics lasts longer than style is not established. Raw BERTScore has a different score distribution from lexical overlap, and the style index depends on a chosen distance formula and five equally weighted features. T0 normalization alone cannot resolve these differences. A high style index can also conceal substantial changes in features not measured here. Decline relative to T0 is evidence of change, not proof of a loss of authorial identity.', '',
     '## 7. Limitations and Next Steps', '',
     '- Treat the stylistic features as an initial analysis. Add length-controlled lexical diversity, richer syntactic features, and authorship attribution before making claims about identity loss.',
     '- Validate semantic retention using human judgments or controlled meaning-change examples, and record the BERTScore model and configuration when regenerating scores.',

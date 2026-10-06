@@ -14,6 +14,7 @@ class StyleDecayTests(unittest.TestCase):
         self.assertEqual(values['sentence_length_mean'], 2.5)
         self.assertEqual(values['sentence_length_variance'], .25)
         self.assertEqual(values['punctuation_frequency'], 40)
+        self.assertEqual(values['average_word_length'], 2.8)
         self.assertEqual(stylistic_features('One sentence.')['sentence_length_variance'], 0)
 
     def test_zero_baseline_and_direction(self):
@@ -27,7 +28,7 @@ class StyleDecayTests(unittest.TestCase):
 
     def test_alignment_anchors_and_missing_scores(self):
         chains = pd.DataFrame([dict(dataset='test', key='shared', source='Human', paraphraser=m,
-                                    t0='A cat.', t1='A dog.', t2='A bird.', t3='A horse.') for m in MODELS])
+                                    t0='A cat.', t1='A dog.', t2='A pig.', t3='A fox.') for m in MODELS])
         with tempfile.TemporaryDirectory() as directory:
             rows = [{**{k: c[k] for k in KEYS[:-1]}, 'generation': g} for c in chains.to_dict('records') for g in ['t1', 't2', 't3']]
             lexical = pd.DataFrame(rows).assign(**{m: .5 for m in LEXICAL})
@@ -47,7 +48,7 @@ class StyleDecayTests(unittest.TestCase):
 
     def test_duplicate_chains_rejected(self):
         chains = pd.DataFrame([dict(dataset='test', key='shared', source='Human', paraphraser=m,
-                                    t0='A cat.', t1='A dog.', t2='A bird.', t3='A horse.') for m in MODELS])
+                                    t0='A cat.', t1='A dog.', t2='A pig.', t3='A fox.') for m in MODELS])
         with self.assertRaisesRegex(ValueError, 'duplicate'):
             build_details(pd.concat([chains, chains]), Path('unused'), Path('unused'))
 
