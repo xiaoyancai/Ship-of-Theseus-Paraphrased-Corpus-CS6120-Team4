@@ -24,3 +24,6 @@ data/raw/
 
 # Large processed dataset stored on Google Drive
 data/processed/paired_all.pkl
+
+# Reproducible intermediate caches
+data/cache/
