@@ -21,3 +21,6 @@ venv/
 .env
 # Raw dataset files
 data/raw/
+
+# Large processed dataset stored on Google Drive
+data/processed/paired_all.pkl

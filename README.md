@@ -264,3 +264,25 @@ In the coming weeks, the team plans to:
 
 The project uses the public
 [Ship of Theseus Paraphrased Corpus](https://github.com/tripto03/Ship_of_theseus_paraphrased_copus).
+
+## Linguistic Forensic Audit — Data Preparation
+
+For the current audit, `src/preprocessing.py` loads all **7 datasets** and **Human + 6 LLM sources**, normalizes `orignal` to `original`, and aligns T0 with all **7 T1 paraphraser variants** using `(key, source, dataset)`. After excluding incomplete records and one empty-text pair, the dataset contains **18,049 paired rows** and 11 columns. Requiring all seven T1 variants ensures a consistent comparison sample.
+
+- **Processed data:** [Download `paired_all.pkl` from Google Drive](https://drive.google.com/file/d/19V_df0vA-gSeNCo8XYq3gnv0LH-qM5ln/view?usp=sharing)
+- **Notebook:** `notebooks/03_linguistic_audit.ipynb` (dataset/source counts and two sample rows per dataset)
+
+Download `paired_all.pkl` to `data/processed/`, then load it using:
+
+```python
+import pandas as pd
+paired = pd.read_pickle("data/processed/paired_all.pkl")
+```
+
+Alternatively, regenerate it from the raw CSV files in `data/raw/paraphrased_datasets/`:
+
+```python
+from src.preprocessing import load_all_datasets, build_paired_dataset, validate_and_save_paired
+paired = build_paired_dataset(load_all_datasets())
+validate_and_save_paired(paired)
+```
