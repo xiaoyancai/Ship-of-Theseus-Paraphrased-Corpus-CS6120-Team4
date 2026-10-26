@@ -1,0 +1,59 @@
+{
+  "input_sha256": "ac00ca1d04cdd5093d7896282e74c81cb12086174f6ddb9d43535f816e29981b",
+  "n_pairs": 18049,
+  "zero_entity_originals": 1600,
+  "datasets": [
+    "cmv",
+    "eli5",
+    "sci_gen",
+    "tldr",
+    "wp",
+    "xsum",
+    "yelp"
+  ],
+  "sources": [
+    "BigScience",
+    "Eleuther-AI",
+    "Human",
+    "LLAMA",
+    "OpenAI",
+    "PaLM",
+    "Tsinghua"
+  ],
+  "spacy_version": "3.7.5",
+  "model": "en_core_web_sm",
+  "model_version": "3.7.1",
+  "enabled_pipeline": [
+    "tok2vec",
+    "ner"
+  ],
+  "entity_labels": [
+    "CARDINAL",
+    "DATE",
+    "EVENT",
+    "FAC",
+    "GPE",
+    "LANGUAGE",
+    "LAW",
+    "LOC",
+    "MONEY",
+    "NORP",
+    "ORDINAL",
+    "ORG",
+    "PERCENT",
+    "PERSON",
+    "PRODUCT",
+    "QUANTITY",
+    "TIME",
+    "WORK_OF_ART"
+  ],
+  "input_url": "https://drive.google.com/file/d/19V_df0vA-gSeNCo8XYq3gnv0LH-qM5ln/view",
+  "std_ddof": 1,
+  "empty_T0_policy": "All three metrics NaN; exclude from all metric means",
+  "empty_T1_precision": "NaN for undefined 0/0",
+  "excluded_fraction": 0.08864757050252091,
+  "eligible_pairs": 16449,
+  "chart_layout": "Three metric clusters, each with slight/full bars; pooled article-level means and sample SD",
+  "cache_fingerprint": "a739323265305d64aa640a7865df886e1ddaabbaa46aec73f3f89ab63824272e",
+  "interpretation_words": 101
+}

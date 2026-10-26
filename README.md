@@ -286,3 +286,18 @@ from src.preprocessing import load_all_datasets, build_paired_dataset, validate_
 paired = build_paired_dataset(load_all_datasets())
 validate_and_save_paired(paired)
 ```
+
+## Task 3 — NER Stability & Content Erasure
+
+With `paired_all.pkl` in `data/processed/`, run `python -m src.ner_stability --processes 4`
+(or execute the Task 3 cells in `notebooks/03_linguistic_audit.ipynb`).
+The analysis compares ChatGPT, Dipper(high), Pegasus(slight), and Pegasus(full)
+against T0 using lowercase named-entity sets.
+
+- [Results, mean ± SD tables, chart, and interpretation](data/results/task3_ner/task3_ner_report.md)
+- [Analysis source](src/ner_stability.py)
+
+Articles with zero T0 entities have all three metrics set to NaN and are excluded
+from all means. Precision is also undefined when T1 has zero entities. Exclusion
+counts, proportions and valid per-metric counts are reported. The Pegasus chart
+has three metric clusters with slight/full bars and sample-standard-deviation error bars.

@@ -1,0 +1,10 @@
+{
+  "verified_score_rows": 72196,
+  "verified_pairs": 18049,
+  "verified_datasets": 7,
+  "verified_sources": 7,
+  "all_article_metrics_recomputed_from_exported_sets": true,
+  "all_main_summary_counts_means_sample_stds_verified": true,
+  "interpretation_words": 101,
+  "metric_edge_case_tests_passed": 4
+}
