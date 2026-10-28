@@ -286,3 +286,42 @@ from src.preprocessing import load_all_datasets, build_paired_dataset, validate_
 paired = build_paired_dataset(load_all_datasets())
 validate_and_save_paired(paired)
 ```
+
+
+
+## Project Update 2 — Setup and Reproduction
+
+### Download Processed Data
+
+The large processed datasets are stored on Google Drive instead of GitHub.
+
+**[Download Update 2 processed datasets from Google Drive](https://drive.google.com/drive/folders/1ju91YAi1wfuECSzvz9RfPeho32v66HiC?usp=sharing)**
+
+Download these two files into `data/processed/`:
+
+| File | Description |
+|---|---|
+| `update2_chains.pkl` | 132,659 complete T0–T3 chains containing original and paraphrased texts |
+| `update2_features.pkl` | 530,636 text-version records containing 23 linguistic features |
+
+### Run the Notebooks
+
+After installing the dependencies from `requirements.txt`, run the notebooks in order:
+
+1. `notebooks/04_update2_data_preparation.ipynb` — validate processed data and extracted features.
+2. `notebooks/05_update2_rq1_style_analysis.ipynb` — analyze POS drift, dependency-depth changes, and Human vs. LLM differences.
+
+If both processed files are downloaded, there is no need to download the raw CSV datasets or rerun feature extraction.
+
+### Regenerate Processed Data (Optional)
+
+To regenerate the datasets, download all seven raw CSV datasets from the original corpus into `data/raw/paraphrased_datasets/`, then run from the repository root:
+
+```bash
+python -m src.chain_alignment
+python -m src.stylometry
+```
+
+The generated files are excluded from GitHub because of their size.
+
+RQ1 result tables are saved in `data/results/update2/`, and figures are saved in `figures/update2/`.
