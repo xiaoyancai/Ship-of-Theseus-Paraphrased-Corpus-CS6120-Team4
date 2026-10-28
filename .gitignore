@@ -27,3 +27,8 @@ data/processed/paired_all.pkl
 
 # Reproducible intermediate caches
 data/cache/
+
+# Update 2 generated datasets
+data/processed/update2_chains.pkl
+data/processed/update2_features.pkl
+data/processed/update2_features_sample.pkl

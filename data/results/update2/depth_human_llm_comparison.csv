@@ -1,0 +1,5 @@
+stage,combinations,human_mean,llm_mean,llm_minus_human
+t0,49,0.0,0.0,0.0
+t1,49,0.73,0.818,0.088
+t2,49,0.889,0.981,0.092
+t3,49,0.973,1.106,0.133
