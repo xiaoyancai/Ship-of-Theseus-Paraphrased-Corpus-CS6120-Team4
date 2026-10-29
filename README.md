@@ -25,9 +25,9 @@ overlap, semantic similarity, and lightweight stylistic features from T0 to T3.
 
 ### RQ2 — Point of No Return
 
-At what iteration does a text lose its original authorial identity? This will be
-studied later by training an authorship-attribution model on T0 and evaluating
-it on T1–T3.
+At what iteration does a text lose its original authorial identity? We train a
+Human-vs.-LLM classifier on T0 and test it on held-out T0–T3 data, then compare
+how much performance drops at each paraphrasing step.
 
 ### RQ3 — Paraphraser Fingerprints
 
@@ -325,3 +325,23 @@ python -m src.stylometry
 The generated files are excluded from GitHub because of their size.
 
 RQ1 result tables are saved in `data/results/update2/`, and figures are saved in `figures/update2/`.
+
+### RQ2 Authorship Attribution
+
+The train/test split uses `group_id`. The classifier is trained on T0 only.
+
+```bash
+python -m src.authorship_attribution
+```
+
+The main outputs are:
+
+- `data/results/update2/rq2_authorship_metrics.csv`
+- `data/results/update2/rq2_confusion_matrices.csv`
+- `data/results/update2/rq2_subgroup_metrics.csv`
+- `data/results/update2/rq2_group_split.csv`
+- `data/results/update2/rq2_authorship_summary.json`
+- `figures/update2/rq2_attribution_decay.png`
+
+Balanced accuracy is 0.800 at T0, 0.670 at T1, 0.646 at T2, and 0.631 at T3.
+Macro F1 is 0.693 at T0, 0.553 at T1, 0.539 at T2, and 0.535 at T3.
