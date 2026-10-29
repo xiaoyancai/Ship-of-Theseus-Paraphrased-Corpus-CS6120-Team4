@@ -1,0 +1,16 @@
+{
+  "feature_count": 23,
+  "model": "class-balanced RBF-SVM (C=1.0)",
+  "training_stage": "T0 only",
+  "split_unit": "group_id",
+  "split_stratification": "dataset",
+  "random_state": 42,
+  "test_size": 0.2,
+  "train_groups": 2416,
+  "test_groups": 604,
+  "train_unique_t0_origins": 15469,
+  "bootstrap_samples": 2000,
+  "largest_drop_stage": "T1",
+  "largest_adjacent_macro_f1_drop": 0.13976293095432424,
+  "undetectable_stage": null
+}

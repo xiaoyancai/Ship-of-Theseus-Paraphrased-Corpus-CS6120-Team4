@@ -1,0 +1,17 @@
+stage,true_label,predicted_label,count
+T0,Human,Human,506
+T0,Human,LLM,98
+T0,LLM,Human,779
+T0,LLM,LLM,2490
+T1,Human,Human,3005
+T1,Human,LLM,1083
+T1,LLM,Human,8917
+T1,LLM,LLM,13593
+T2,Human,Human,2832
+T2,Human,LLM,1256
+T2,LLM,Human,9037
+T2,LLM,LLM,13473
+T3,Human,Human,2676
+T3,Human,LLM,1412
+T3,LLM,Human,8849
+T3,LLM,LLM,13661
