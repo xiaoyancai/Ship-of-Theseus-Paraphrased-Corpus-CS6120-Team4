@@ -32,3 +32,5 @@ data/cache/
 data/processed/update2_chains.pkl
 data/processed/update2_features.pkl
 data/processed/update2_features_sample.pkl
+
+data/results/update2/rq2_authorship_model.joblib
