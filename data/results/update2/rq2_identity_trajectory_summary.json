@@ -1,0 +1,14 @@
+{
+  "n_feature_rows": 530636,
+  "n_aggregated_rows": 24160,
+  "n_groups": 3020,
+  "n_train_groups": 2416,
+  "n_test_groups": 604,
+  "feature_count": 23,
+  "pca_explained_variance_ratio": [
+    0.24447727740232025,
+    0.09910640936539862
+  ],
+  "tsne_sample_rows": 2800,
+  "random_state": 42
+}
