@@ -345,3 +345,17 @@ The main outputs are:
 
 Balanced accuracy is 0.800 at T0, 0.670 at T1, 0.646 at T2, and 0.631 at T3.
 Macro F1 is 0.693 at T0, 0.553 at T1, 0.539 at T2, and 0.535 at T3.
+
+### RQ3 Initial Paraphraser Fingerprints
+
+```bash
+python -m src.paraphraser_fingerprint
+python -m tests.test_paraphraser_fingerprint
+```
+
+Classifies T1 into ChatGPT, PaLM, Dipper and Pegasus(full), using the 23
+existing linguistic features. Random forest achieves accuracy **0.6382**
+and macro F1 **0.6225**; logistic regression achieves **0.5912 / 0.5776**.
+See `docs/update2_rq3_fingerprint.md` for confusion matrices, preliminary
+feature interpretation and limitations. Tables and split assignments are in
+`data/results/update2/rq3_*`; plots are in `figures/update2/rq3_*`.

@@ -1,0 +1,67 @@
+{
+  "stage": "t1",
+  "labels": [
+    "ChatGPT",
+    "PaLM",
+    "Dipper",
+    "Pegasus"
+  ],
+  "pegasus_variant": "Pegasus(full)",
+  "features": [
+    "pos_ADJ",
+    "pos_ADP",
+    "pos_ADV",
+    "pos_AUX",
+    "pos_CCONJ",
+    "pos_DET",
+    "pos_INTJ",
+    "pos_NOUN",
+    "pos_NUM",
+    "pos_PART",
+    "pos_PRON",
+    "pos_PROPN",
+    "pos_PUNCT",
+    "pos_SCONJ",
+    "pos_SYM",
+    "pos_VERB",
+    "pos_X",
+    "dependency_depth",
+    "type_token_ratio",
+    "sentence_length_mean",
+    "sentence_length_variance",
+    "punctuation_frequency",
+    "average_word_length"
+  ],
+  "seed": 42,
+  "test_fraction": 0.2,
+  "n_train_groups": 2416,
+  "n_test_groups": 604,
+  "group_overlap": 0,
+  "n_train": 59662,
+  "n_test": 14981,
+  "metrics": [
+    {
+      "model": "majority_baseline",
+      "n_train": 59662,
+      "n_test": 14981,
+      "accuracy": 0.2585274681262933,
+      "macro_f1": 0.10271030020154874
+    },
+    {
+      "model": "logistic_regression",
+      "n_train": 59662,
+      "n_test": 14981,
+      "accuracy": 0.5912155396835992,
+      "macro_f1": 0.5776002248015276
+    },
+    {
+      "model": "random_forest",
+      "n_train": 59662,
+      "n_test": 14981,
+      "accuracy": 0.6382083973032507,
+      "macro_f1": 0.622505872040079
+    }
+  ],
+  "missing_feature_values": 20,
+  "input": "data/processed/update2_features.pkl"
+}
