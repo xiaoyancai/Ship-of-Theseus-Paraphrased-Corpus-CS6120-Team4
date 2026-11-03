@@ -1,13 +1,6 @@
 # Ship of Theseus: Computational Forensics
 
-This project investigates how iterative paraphrasing changes lexical form,
-semantic content, and writing style. It uses the *Ship of Theseus Paraphrased
-Corpus* to track texts from their original form (T0) through three successive
-paraphrasing iterations (T1–T3).
-
-This repository currently contains the work completed for **Project Update 1
-(Week 6)**: data preprocessing, similarity baselines, an initial stylometric
-audit, and T0–T3 decay visualizations.
+This repository studies how repeated paraphrasing changes writing style, semantic content, and source-identifying features from the original text (T0) to three successive rewrites (T1–T3). It includes the initial baselines from Project Update 1 and the expanded RQ1–RQ3 experiments for Project Update 2.
 
 ## Team Members
 
@@ -34,328 +27,70 @@ how much performance drops at each paraphrasing step.
 Do ChatGPT, PaLM, Pegasus, and Dipper leave distinguishable linguistic traces?
 This will be studied later with paraphraser classification and feature analysis.
 
-## Project Update 1 Scope
+## Project Overview
 
-Update 1 provides an initial investigation of RQ1.
+We use the [Ship of Theseus Paraphrased Corpus](https://github.com/tripto03/Ship_of_theseus_paraphrased_copus) across **7 datasets**, with Human and LLM original sources and **7 paraphraser configurations**.
 
-- Datasets: Yelp and XSum
-- Source: human-authored texts only (`source == "Human"`)
-- Paraphrasers: ChatGPT, PaLM, Pegasus(full), and Dipper
-- Generations: T0, T1, T2, and T3
-- Inclusion rule: only complete T0–T3 chains are retained
-- Lexical metrics: sentence BLEU and ROUGE-1/2/L F1
-- Semantic metric: BERTScore precision, recall, and F1
-- Initial style features:
-  - Type–Token Ratio
-  - mean sentence length
-  - sentence-length variance
-  - punctuation frequency
-  - average word length
-
-RQ2 and RQ3 are not claimed as completed in Update 1.
-
-## Dataset
-
-The project uses the public
-[Ship of Theseus Paraphrased Corpus](https://github.com/tripto03/Ship_of_theseus_paraphrased_copus).
-The full corpus contains seven datasets and four paraphrasers. Update 1 uses the
-Yelp and XSum subsets.
-
-Raw corpus files are not committed to this repository. To reproduce
-preprocessing, place the required files at:
-
-```text
-data/raw/paraphrased_datasets/yelp_paraphrased.csv
-data/raw/paraphrased_datasets/xsum_paraphrased.csv
-```
-
-The raw files contain the following fields:
-
-```text
-source, key, text, version_name
-```
-
-## Preprocessing
-
-The preprocessing pipeline:
-
-1. keeps rows with `source == "Human"`;
-2. maps raw version names onto T0, T1, T2, and T3;
-3. constructs separate chains for ChatGPT, PaLM, Pegasus(full), and Dipper;
-4. removes chains missing any generation;
-5. checks missing values and duplicate document/paraphraser rows; and
-6. writes a shared processed file for downstream experiments.
-
-The primary processed file is:
-
-```text
-data/processed/update1_processed.csv
-```
-
-Its columns are:
-
-```text
-dataset, key, source, paraphraser, t0, t1, t2, t3
-```
-
-### Complete T0–T3 Chains
-
-| Dataset | ChatGPT | PaLM | Pegasus | Dipper |
-|---|---:|---:|---:|---:|
-| Yelp | 488 | 486 | 491 | 491 |
-| XSum | 471 | 340 | 475 | 476 |
-
-The processed data contains **3,718 complete chains**.
-
-## Repository Structure
-
-```text
-.
-├── data/
-│   ├── raw/          # Local raw corpus files; not committed
-│   ├── processed/    # Standardized T0–T3 chains
-│   ├── metadata/     # Dataset and chain-count tables
-│   └── results/      # Document-level and aggregate results
-├── docs/             # Generated analysis and interpretation
-├── figures/          # Update 1 plots
-├── notebooks/        # Data exploration and analysis notebooks
-├── src/              # Reusable preprocessing and analysis code
-├── tests/            # Automated checks
-└── requirements.txt  # Python dependencies
-```
+- **132,659** complete T0–T3 chains; **530,636** text-version records.
+- **23 linguistic features:** 17 POS proportions, dependency depth, and 5 stylometric features.
+- **RQ1:** Lexical/semantic retention, POS-frequency and POS-distribution changes, dependency-depth drift.
+- **RQ2:** Human-vs.-LLM source attribution across T0–T3 and PCA/t-SNE identity trajectories.
+- **RQ3:** Initial T1 paraphraser classification (ChatGPT, PaLM, Dipper, Pegasus).
 
 ## Setup
 
-Create a virtual environment and install the dependencies:
+From the repository root:
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
 python -m pip install -r requirements.txt
 ```
 
-On Windows, activate the environment with:
+Download [`update2_chains.pkl` and `update2_features.pkl` from Google Drive](https://drive.google.com/drive/folders/1ju91YAi1wfuECSzvz9RfPeho32v66HiC?usp=sharing), then place both in `data/processed/`. Raw and large processed datasets are not stored in GitHub.
 
-```powershell
-.venv\Scripts\activate
-```
+## Run the Notebooks
 
-## Reproduce the Update 1 Analysis
+Open the `notebooks/` folder in VS Code or Jupyter, select the project's Python environment as the kernel, and run in order:
 
-Run all commands from the repository root.
-
-### 1. Preprocess and inspect the data
-
-Open and run:
-
-```text
-notebooks/01_data_exploration.ipynb
-```
-
-The already processed Update 1 CSV files are included in the repository, so the
-remaining experiments can be reproduced without rerunning raw-data ingestion.
-
-### 2. Compute lexical similarity
-
-```bash
-python src/similarity_baseline.py --metrics lexical \
-  --details-output data/results/update1_lexical_scores.csv \
-  --summary-output data/results/update1_lexical_summary.csv
-```
-
-### 3. Compute BERTScore
-
-```bash
-python src/similarity_baseline.py --metrics bertscore \
-  --details-output data/results/update1_bertscore_scores.csv \
-  --summary-output data/results/update1_bertscore_summary.csv
-```
-
-The default BERTScore configuration uses `distilbert-base-uncased`, English,
-no baseline rescaling, batch size 8, and CPU execution.
-
-### 4. Generate style analysis and figures
-
-```bash
-python src/style_decay.py
-```
-
-Alternatively, open and run:
-
-```text
-notebooks/02_style_content_decay.ipynb
-```
-
-This analysis validates exact document/generation alignment before combining
-lexical, semantic, and stylistic results.
-
-### 5. Run the tests
-
-```bash
-python -m pytest -q
-```
-
-## Update 1 Outputs
-
-### Similarity results
-
-- `data/results/update1_lexical_scores.csv`
-- `data/results/update1_lexical_summary.csv`
-- `data/results/update1_bertscore_scores.csv`
-- `data/results/update1_bertscore_summary.csv`
-
-### Style-decay results
-
-- `data/results/update1_style_decay_scores.csv`
-- `data/results/update1_style_decay_summary.csv`
-- `data/results/update1_style_decay_matched_summary.csv`
-- `data/results/update1_style_decay_metadata.json`
-
-### Figures and interpretation
-
-- `figures/update1_lexical_decay.png`
-- `figures/update1_style_decay.png`
-- `figures/update1_retention_comparison.png`
-- `figures/update1_matched_comparison.png`
-- `docs/update1_style_decay.md`
-
-## Initial Results
-
-- Lexical overlap generally decreases from T1 to T3.
-- BERTScore remains comparatively high while BLEU and ROUGE decline, which is
-  consistent with meaning being more stable than surface wording.
-- Sentence-length variance shows the largest departure among the five initial
-  style features, while Type–Token Ratio and average word length remain closer
-  to their T0 values.
-- Results vary across datasets and paraphrasers.
-- A matched-source analysis is included because complete-chain counts differ
-  across paraphrasers, especially for XSum PaLM.
-
-These are descriptive initial findings. BLEU, BERTScore, and the exploratory
-style-retention index have different score distributions and should not be
-treated as directly equivalent scales.
-
-## Limitations
-
-- Update 1 analyzes only the Yelp and XSum human-source subsets.
-- The current style analysis uses five lightweight surface features.
-- POS distributions and dependency-based syntactic features are not yet
-  included.
-- Current plots show group means without paired confidence intervals.
-- Linguistic change relative to T0 does not by itself prove loss of authorial
-  identity.
-
-## Plan for Next
-
-In the coming weeks, the team plans to:
-
-1. add POS-frequency and dependency-based structural features to strengthen
-   the RQ1 analysis;
-2. add source-level paired confidence intervals and significance checks;
-3. train an authorship-attribution model on T0 only and evaluate accuracy and
-   F1 on T1, T2, and T3 for RQ2;
-4. identify a possible “point of no return” through performance-decay curves
-   and error analysis;
-5. train a multi-class paraphraser-identification model for RQ3 and report a
-   confusion matrix and feature importance; and
-6. extend the experiments to additional corpus subsets after validating the
-   Yelp/XSum pipeline.
-
-The project uses the public
-[Ship of Theseus Paraphrased Corpus](https://github.com/tripto03/Ship_of_theseus_paraphrased_copus).
-
-## Linguistic Forensic Audit — Data Preparation
-
-For the current audit, `src/preprocessing.py` loads all **7 datasets** and **Human + 6 LLM sources**, normalizes `orignal` to `original`, and aligns T0 with all **7 T1 paraphraser variants** using `(key, source, dataset)`. After excluding incomplete records and one empty-text pair, the dataset contains **18,049 paired rows** and 11 columns. Requiring all seven T1 variants ensures a consistent comparison sample.
-
-- **Processed data:** [Download `paired_all.pkl` from Google Drive](https://drive.google.com/file/d/19V_df0vA-gSeNCo8XYq3gnv0LH-qM5ln/view?usp=sharing)
-- **Notebook:** `notebooks/03_linguistic_audit.ipynb` (dataset/source counts and two sample rows per dataset)
-
-Download `paired_all.pkl` to `data/processed/`, then load it using:
-
-```python
-import pandas as pd
-paired = pd.read_pickle("data/processed/paired_all.pkl")
-```
-
-Alternatively, regenerate it from the raw CSV files in `data/raw/paraphrased_datasets/`:
-
-```python
-from src.preprocessing import load_all_datasets, build_paired_dataset, validate_and_save_paired
-paired = build_paired_dataset(load_all_datasets())
-validate_and_save_paired(paired)
-```
-
-
-
-## Project Update 2 — Setup and Reproduction
-
-### Download Processed Data
-
-The large processed datasets are stored on Google Drive instead of GitHub.
-
-**[Download Update 2 processed datasets from Google Drive](https://drive.google.com/drive/folders/1ju91YAi1wfuECSzvz9RfPeho32v66HiC?usp=sharing)**
-
-Download these two files into `data/processed/`:
-
-| File | Description |
+| Notebook | Purpose |
 |---|---|
-| `update2_chains.pkl` | 132,659 complete T0–T3 chains containing original and paraphrased texts |
-| `update2_features.pkl` | 530,636 text-version records containing 23 linguistic features |
+| `04_update2_data_preparation.ipynb` | Validate T0–T3 chains and extracted features |
+| `05_update2_rq1_style_analysis.ipynb` | RQ1: POS frequencies/drift, dependency depth, Human vs. LLM |
+| `06_update2_rq2_authorship.ipynb` | RQ2: Train on T0; evaluate attribution on T0–T3 |
+| `07_update2_rq2_identity_trajectory.ipynb` | RQ2: PCA and t-SNE visualizations |
+| `08_update2_rq3_fingerprints.ipynb` | RQ3: Classifiers, confusion matrices, and feature analysis |
 
-### Run the Notebooks
+Notebooks `01`–`03` contain earlier baseline and linguistic-audit work; they are not prerequisites when using the downloaded Update 2 files.
 
-After installing the dependencies from `requirements.txt`, run the notebooks in order:
+Alternatively, run the RQ2–RQ3 modules from the repository root:
 
-1. `notebooks/04_update2_data_preparation.ipynb` — validate processed data and extracted features.
-2. `notebooks/05_update2_rq1_style_analysis.ipynb` — analyze POS drift, dependency-depth changes, and Human vs. LLM differences.
+```bash
+python -m src.authorship_attribution
+python -m src.identity_trajectory
+python -m src.paraphraser_fingerprint
+```
 
-If both processed files are downloaded, there is no need to download the raw CSV datasets or rerun feature extraction.
+## Outputs
 
-### Regenerate Processed Data (Optional)
+- `data/results/update2/` — RQ1–RQ3 CSV/JSON results.
+- `figures/update2/` — POS, dependency-depth, attribution, PCA/t-SNE, and classifier figures.
+- `docs/update2_rq3_fingerprint.md` — RQ3 method and findings.
+- `data/results/update1_*.csv` and `figures/update1_*.png` — original lexical/semantic baselines.
 
-To regenerate the datasets, download all seven raw CSV datasets from the original corpus into `data/raw/paraphrased_datasets/`, then run from the repository root:
+Notebook 05 also exports `pos_tag_frequency_by_stage.csv` and `pos_tag_frequency_shift.png` when its new POS-frequency section is run. These outputs are being added with the Member 1 updates.
+
+## Rebuild Data (Optional)
+
+To regenerate the shared Update 2 pickle files, place all seven raw CSVs in `data/raw/paraphrased_datasets/` (named `<dataset>_paraphrased.csv`) and run:
 
 ```bash
 python -m src.chain_alignment
 python -m src.stylometry
 ```
 
-The generated files are excluded from GitHub because of their size.
-
-RQ1 result tables are saved in `data/results/update2/`, and figures are saved in `figures/update2/`.
-
-### RQ2 Authorship Attribution
-
-The train/test split uses `group_id`. The classifier is trained on T0 only.
+Full feature extraction may be time-consuming. To run automated checks:
 
 ```bash
-python -m src.authorship_attribution
+python -m pytest -q
 ```
-
-The main outputs are:
-
-- `data/results/update2/rq2_authorship_metrics.csv`
-- `data/results/update2/rq2_confusion_matrices.csv`
-- `data/results/update2/rq2_subgroup_metrics.csv`
-- `data/results/update2/rq2_group_split.csv`
-- `data/results/update2/rq2_authorship_summary.json`
-- `figures/update2/rq2_attribution_decay.png`
-
-Balanced accuracy is 0.800 at T0, 0.670 at T1, 0.646 at T2, and 0.631 at T3.
-Macro F1 is 0.693 at T0, 0.553 at T1, 0.539 at T2, and 0.535 at T3.
-
-### RQ3 Initial Paraphraser Fingerprints
-
-```bash
-python -m src.paraphraser_fingerprint
-python -m tests.test_paraphraser_fingerprint
-```
-
-Classifies T1 into ChatGPT, PaLM, Dipper and Pegasus(full), using the 23
-existing linguistic features. Random forest achieves accuracy **0.6382**
-and macro F1 **0.6225**; logistic regression achieves **0.5912 / 0.5776**.
-See `docs/update2_rq3_fingerprint.md` for confusion matrices, preliminary
-feature interpretation and limitations. Tables and split assignments are in
-`data/results/update2/rq3_*`; plots are in `figures/update2/rq3_*`.
