@@ -25,7 +25,7 @@ how much performance drops at each paraphrasing step.
 ### RQ3 — Paraphraser Fingerprints
 
 Do ChatGPT, PaLM, Pegasus, and Dipper leave distinguishable linguistic traces?
-This will be studied later with paraphraser classification and feature analysis.
+
 
 ## Project Overview
 
@@ -78,7 +78,7 @@ python -m src.paraphraser_fingerprint
 - `docs/update2_rq3_fingerprint.md` — RQ3 method and findings.
 - `data/results/update1_*.csv` and `figures/update1_*.png` — original lexical/semantic baselines.
 
-Notebook 05 also exports `pos_tag_frequency_by_stage.csv` and `pos_tag_frequency_shift.png` when its new POS-frequency section is run. These outputs are being added with the Member 1 updates.
+Notebook 05 also exports `pos_tag_frequency_by_stage.csv` and `pos_tag_signed_changes.png` when its new POS-frequency section is run. These outputs are being added with the Member 1 updates.
 
 ## Rebuild Data (Optional)
 
